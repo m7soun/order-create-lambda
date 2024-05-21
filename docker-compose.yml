@@ -1,0 +1,9 @@
+version: "3.2"  # optional since v1.27.0
+services:
+  myapp:
+    build:
+      context: .
+    ports:
+      - "8000:8000/tcp"
+    env_file:
+      - .env

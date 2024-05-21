@@ -1,0 +1,98 @@
+image: docker:latest
+
+pipelines:
+  tags:
+    'v*.*.*-rc.*':
+      - step:
+          name: Build and push Docker image
+          runs-on: gcp
+          # size: 2x
+          caches:
+            - docker
+          script:
+            - echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON" > /tmp/gcloud-service-key.json
+            - docker login -u _json_key --password-stdin https://gcr.io < /tmp/gcloud-service-key.json
+            - export DOCKER_BUILDKIT=0
+            - docker build --build-arg TOKEN=$REPMAN_TOKEN_LEGACY -t gcr.io/$GCLOUD_DEVOPS_PROJECT_NAME/lyve/ngage-optimizer:$BITBUCKET_TAG .
+            - docker push gcr.io/$GCLOUD_DEVOPS_PROJECT_NAME/lyve/ngage-optimizer:$BITBUCKET_TAG
+          services:
+            - docker
+
+      - step:
+          name: Update TEST env image tag and create pull request in ArgoCD repo
+          runs-on: gcp
+          image: alpine:3.17
+          script:
+            - apk add --no-cache git curl openssh-client
+            - echo "$GITHUB_SSH_PRIVATE_KEY" | base64 -d > /tmp/ssh-private-key
+            - chmod 400 /tmp/ssh-private-key
+            - eval `ssh-agent -s`
+            - ssh-add /tmp/ssh-private-key
+            - ssh-keyscan github.com >> /root/.ssh/known_hosts
+            - git config --global user.email "cd@lyve.dev"
+            - git config --global user.name "CD Bot"
+            - git clone --branch main --depth=1 git@github.com:lyveglobal/argocd-aws.git /tmp/argocd-aws
+            - cd /tmp/argocd-aws
+            - sed -i "s/\(newTag:\s*\).*/\1$BITBUCKET_TAG/" apps/ngage-optimizer/overlays/test/kustomization.yaml
+            - git add apps/ngage-optimizer/overlays/test/kustomization.yaml
+            - git commit -m "Update ngage-optimizer image tag to $BITBUCKET_TAG"
+            - git push origin HEAD:test-update-ngage-optimizer-image-tag-$BITBUCKET_TAG
+            - 'curl -H "Authorization: token $GITHUB_TOKEN_FOR_BITBUCKET" -H "Accept: application/vnd.github+json" -X POST -d "{\"title\":\"[TEST] Update ngage-optimizer image tag to $BITBUCKET_TAG\",\"body\":\"test:ngage-optimizer:$BITBUCKET_TAG\",\"head\":\"test-update-ngage-optimizer-image-tag-$BITBUCKET_TAG\",\"base\":\"main\"}" https://api.github.com/repos/lyveglobal/argocd-aws/pulls'
+
+      - step:
+          name: Update STAGE env image tag and create pull request in ArgoCD repo
+          runs-on: gcp
+          image: alpine:3.17
+          script:
+            - apk add --no-cache git curl openssh-client
+            - echo "$GITHUB_SSH_PRIVATE_KEY" | base64 -d > /tmp/ssh-private-key
+            - chmod 400 /tmp/ssh-private-key
+            - eval `ssh-agent -s`
+            - ssh-add /tmp/ssh-private-key
+            - ssh-keyscan github.com >> /root/.ssh/known_hosts
+            - git config --global user.email "cd@lyve.dev"
+            - git config --global user.name "CD Bot"
+            - git clone --branch main --depth=1 git@github.com:lyveglobal/argocd-aws.git /tmp/argocd-aws
+            - cd /tmp/argocd-aws
+            - sed -i "s/\(newTag:\s*\).*/\1$BITBUCKET_TAG/" apps/ngage-optimizer/overlays/stage/kustomization.yaml
+            - git add apps/ngage-optimizer/overlays/stage/kustomization.yaml
+            - git commit -m "Update ngage-optimizer image tag to $BITBUCKET_TAG"
+            - git push origin HEAD:stage-update-ngage-optimizer-image-tag-$BITBUCKET_TAG
+            - 'curl -H "Authorization: token $GITHUB_TOKEN_FOR_BITBUCKET" -H "Accept: application/vnd.github+json" -X POST -d "{\"title\":\"[STAGE] Update ngage-optimizer image tag to $BITBUCKET_TAG\",\"body\":\"stage:ngage-optimizer:$BITBUCKET_TAG\",\"head\":\"stage-update-ngage-optimizer-image-tag-$BITBUCKET_TAG\",\"base\":\"main\"}" https://api.github.com/repos/lyveglobal/argocd-aws/pulls'
+
+    'v*.*.*':
+      - step:
+          name: Build and push Docker image
+          runs-on: gcp
+          # size: 2x
+          caches:
+            - docker
+          script:
+            - echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON" > /tmp/gcloud-service-key.json
+            - docker login -u _json_key --password-stdin https://gcr.io < /tmp/gcloud-service-key.json
+            - export DOCKER_BUILDKIT=0
+            - docker build --build-arg TOKEN=$REPMAN_TOKEN_LEGACY -t gcr.io/$GCLOUD_DEVOPS_PROJECT_NAME/lyve/ngage-optimizer:$BITBUCKET_TAG .
+            - docker push gcr.io/$GCLOUD_DEVOPS_PROJECT_NAME/lyve/ngage-optimizer:$BITBUCKET_TAG
+          services:
+            - docker
+
+      - step:
+          name: Update PROD env image tag and create pull request in ArgoCD repo
+          runs-on: gcp
+          image: alpine:3.17
+          script:
+            - apk add --no-cache git curl openssh-client
+            - echo "$GITHUB_SSH_PRIVATE_KEY" | base64 -d > /tmp/ssh-private-key
+            - chmod 400 /tmp/ssh-private-key
+            - eval `ssh-agent -s`
+            - ssh-add /tmp/ssh-private-key
+            - ssh-keyscan github.com >> /root/.ssh/known_hosts
+            - git config --global user.email "cd@lyve.dev"
+            - git config --global user.name "CD Bot"
+            - git clone --branch main --depth=1 git@github.com:lyveglobal/argocd-aws.git /tmp/argocd-aws
+            - cd /tmp/argocd-aws
+            - sed -i "s/\(newTag:\s*\).*/\1$BITBUCKET_TAG/" apps/ngage-optimizer/overlays/prod/kustomization.yaml
+            - git add apps/ngage-optimizer/overlays/prod/kustomization.yaml
+            - git commit -m "Update ngage-optimizer image tag to $BITBUCKET_TAG"
+            - git push origin HEAD:prod-update-ngage-optimizer-image-tag-$BITBUCKET_TAG
+            - 'curl -H "Authorization: token $GITHUB_TOKEN_FOR_BITBUCKET" -H "Accept: application/vnd.github+json" -X POST -d "{\"title\":\"[PROD] Update ngage-optimizer image tag to $BITBUCKET_TAG\",\"body\":\"prod:ngage-optimizer:$BITBUCKET_TAG\",\"head\":\"prod-update-ngage-optimizer-image-tag-$BITBUCKET_TAG\",\"base\":\"main\"}" https://api.github.com/repos/lyveglobal/argocd-aws/pulls'

@@ -1,0 +1,58 @@
+{
+  "parent": "{{project_id}}",
+  "model": {
+    "globalStartTime": "{{records.*.start_date}}",
+    "globalEndTime": "{{records.*.end_date}}",
+    "shipments": [
+      {
+        "label": "{{records.*.label}}",
+        "shipment_type": "{{records.*.shipment_type}}",
+        "vehicle_type": "{{records.*.required_vehicle_type}}",
+        "pickups": [
+          {
+            "duration": "{{records.*.check_in_time}}s",
+            "arrivalLocation": {
+              "latitude": "{{records.*.pickup.lat}}",
+              "longitude": "{{records.*.pickup.lng}}"
+            }
+          }
+        ],
+        "loadDemands": {
+          "weight": {
+            "amount": "{{records.*.capacity}}"
+          }
+        },
+        "deliveries": [
+          {
+            "duration": "{{records.*.check_in_time}}s",
+            "arrivalLocation": {
+              "latitude": "{{records.*.dropoff.lat}}",
+              "longitude": "{{records.*.dropoff.lng}}"
+            },
+            "timeWindows": [
+              {
+                "startTime": "{{records.*.time_window.from}}",
+                "endTime": "{{records.*.time_window.to}}"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "vehicles": [
+      {
+        "label": "{{vehicles.*.type}},{{vehicles.*.label}}",
+        "fixed_cost": "{{vehicles.*.cost}}",
+        "loadLimits": {
+          "weight": {
+            "maxLoad": "{{vehicles.*.capacity}}"
+          }
+        },
+        "startLocation": {
+          "latitude": "{{vehicles.*.lat}}",
+          "longitude": "{{vehicles.*.lng}}"
+        }
+      }
+    ]
+  }
+}

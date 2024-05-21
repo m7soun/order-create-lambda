@@ -1,0 +1,7 @@
+fastapi~=0.110.0
+uvicorn==0.28.0
+python-dotenv==1.0.0
+google-cloud-optimization==1.8.2
+pandas==2.2.1
+python-multipart==0.0.9
+openpyxl==3.1.2

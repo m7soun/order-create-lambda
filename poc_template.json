@@ -1,0 +1,66 @@
+{
+  "Stock transfer & Delivery": [
+    {
+      "column_name": [
+        "WH Lat, Long"
+      ],
+      "field_name": "pickup",
+      "separator": ",",
+      "action": "split",
+      "split_into": {
+        "lat": {
+          "prefix": "lat:"
+        },
+        "lng": {
+          "prefix": "lng:"
+        }
+      }
+    },
+    {
+      "column_name": [
+        "Drop of Lat Long"
+      ],
+      "field_name": "dropoff",
+      "separator": ",",
+      "action": "split",
+      "split_into": {
+        "lat": {
+          "prefix": "lat:"
+        },
+        "lng": {
+          "prefix": "lng:"
+        }
+      }
+    },
+    {
+      "column_name": [
+        "TW from",
+        "TW to"
+      ],
+      "field_name": "time_window",
+      "action": "array",
+      "array": {
+        "TW from": {
+          "prefix": "from"
+        },
+        "TW to": {
+          "prefix": "to"
+        }
+      }
+    },
+    {
+      "column_name": [
+        "Vehicle Features"
+      ],
+      "field_name": "required_vehicle_type",
+      "action": "*"
+    },
+    {
+      "column_name": [
+        "Pallets (Load)"
+      ],
+      "field_name": "capacity",
+      "action": "*"
+    }
+  ]
+}

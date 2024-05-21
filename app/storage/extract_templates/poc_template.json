@@ -1,0 +1,113 @@
+{
+  "Stock transfer & Delivery": [
+    {
+      "column_name": [
+        "WH Lat, Long"
+      ],
+      "field_name": "pickup",
+      "separator": ",",
+      "action": "split",
+      "split_into": {
+        "lat": {
+          "prefix": "lat:"
+        },
+        "lng": {
+          "prefix": "lng:"
+        }
+      }
+    },
+    {
+      "column_name": [
+        "Drop of Lat Long"
+      ],
+      "field_name": "dropoff",
+      "separator": ",",
+      "action": "split",
+      "split_into": {
+        "lat": {
+          "prefix": "lat:"
+        },
+        "lng": {
+          "prefix": "lng:"
+        }
+      }
+    },
+    {
+      "column_name": [
+        "TW from",
+        "TW to"
+      ],
+      "field_name": "time_window",
+      "action": "date_range",
+      "array": {
+        "TW from": {
+          "prefix": "from"
+        },
+        "TW to": {
+          "prefix": "to"
+        }
+      }
+    },
+    {
+      "column_name": [
+        "Vehicle Features"
+      ],
+      "field_name": "required_vehicle_type",
+      "action": "*"
+    },
+    {
+      "column_name": [
+        "Location Name"
+      ],
+      "field_name": "customer",
+      "action": "*",
+      "format": "lower_case"
+    },
+    {
+      "column_name": [
+        "Pallets (Load)"
+      ],
+      "field_name": "capacity",
+      "action": "*",
+      "format": "clean_spaces"
+    },
+    {
+      "column_name": [
+        "required_vehicle_type"
+      ],
+      "field_name": "display_name",
+      "action": "concat_uuid"
+    },
+    {
+      "column_name": [
+        "required_vehicle_type"
+      ],
+      "field_name": "label",
+      "action": "concat_uuid"
+    },
+    {
+      "column_name": [
+        "Check-in Time"
+      ],
+      "field_name": "check_in_time",
+      "action": "minutes_to_seconds"
+    }
+  ],
+  "Sheet2": [
+    {
+      "column_name": [
+        "Exclusive Customer"
+      ],
+      "field_name": "customer",
+      "action": "*",
+      "format": "lower_case"
+    },
+    {
+      "column_name": [
+        "Truck Tonage"
+      ],
+      "field_name": "required_truck_type",
+      "action": "*"
+    }
+  ]
+}

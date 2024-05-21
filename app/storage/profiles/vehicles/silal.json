@@ -1,0 +1,37 @@
+[
+  {
+    "name": "25T",
+    "demo_count": 4,
+    "capacity": 24
+  },
+  {
+    "name": "1T",
+    "demo_count": 4,
+    "capacity": 14
+  },
+  {
+    "name": "8T",
+    "demo_count": 4,
+    "capacity": 12
+  },
+  {
+    "name": "7T",
+    "demo_count": 4,
+    "capacity": 8
+  },
+  {
+    "name": "4.9T",
+    "demo_count": 4,
+    "capacity": 8
+  },
+  {
+    "name": "4T",
+    "demo_count": 4,
+    "capacity": 6
+  },
+  {
+    "name": "3.5T",
+    "demo_count": 4,
+    "capacity": 6
+  }
+]
